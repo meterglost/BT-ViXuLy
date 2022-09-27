@@ -1,0 +1,12 @@
+# Proteus
+/Lab[0-9]*/Sim/*.pdsbak
+/Lab[0-9]*/Sim/*.pdsprj.*.workspace
+
+# STM32CubeIDE
+/Lab[0-9]*/Src/.metadata/
+/Lab[0-9]*/Src/*/.settings/
+/Lab[0-9]*/Src/*/Debug/
+/Lab[0-9]*/Src/*/.mxproject
+
+# VSCode
+/.vscode/
