@@ -134,6 +134,8 @@ int main(void)
 	/* USER CODE BEGIN 2 */
 	int clockCount = 0;
 	const int CLOCK_CYCLE = 0 + 5 + 2 + 3;
+
+	int led7SegCountDown;
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -146,18 +148,21 @@ int main(void)
 			HAL_GPIO_WritePin(LED_RED_X_GPIO_Port, LED_RED_X_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(LED_YELLOW_X_GPIO_Port, LED_YELLOW_X_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(LED_GREEN_X_GPIO_Port, LED_GREEN_X_Pin, GPIO_PIN_RESET);
+			led7SegCountDown = 5;
 			break;
 
 		case 0 + 5:
 			HAL_GPIO_WritePin(LED_RED_X_GPIO_Port, LED_RED_X_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(LED_YELLOW_X_GPIO_Port, LED_YELLOW_X_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(LED_GREEN_X_GPIO_Port, LED_GREEN_X_Pin, GPIO_PIN_SET);
+			led7SegCountDown = 3;
 			break;
 
 		case 0 + 5 + 3:
 			HAL_GPIO_WritePin(LED_RED_X_GPIO_Port, LED_RED_X_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(LED_YELLOW_X_GPIO_Port, LED_YELLOW_X_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(LED_GREEN_X_GPIO_Port, LED_GREEN_X_Pin, GPIO_PIN_RESET);
+			led7SegCountDown = 2;
 			break;
 
 		default:
@@ -188,10 +193,11 @@ int main(void)
 			break;
 		}
 
-		display7SEG(clockCount);
+		display7SEG(led7SegCountDown);
 
 		HAL_Delay(1000);
 		clockCount = (++clockCount < CLOCK_CYCLE) ? clockCount : 0;
+		--led7SegCountDown;
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
