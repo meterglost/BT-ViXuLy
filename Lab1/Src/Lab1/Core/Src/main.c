@@ -53,6 +53,10 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void clearAllClock()
+{
+	GPIOA->ODR = 0b0;
+}
 /* USER CODE END 0 */
 
 /**
