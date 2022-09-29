@@ -57,6 +57,11 @@ void clearAllClock()
 {
 	GPIOA->ODR = 0b0;
 }
+
+void setNumberOnClock(int num)
+{
+	GPIOA->BSRR = 0b1 << (4 + num); // Start at PA4
+}
 /* USER CODE END 0 */
 
 /**
