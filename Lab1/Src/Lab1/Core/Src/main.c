@@ -98,17 +98,32 @@ int main(void)
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	/* USER CODE BEGIN 2 */
-	GPIOA->ODR = 0b1 << 4; // Start at PA4
+	int second = 0, minute = 0, hour = 0;
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		// PA4 -> PA15 and repeat
-		GPIOA->ODR = (GPIOA->ODR < (0b1 << 15)) ? GPIOA->ODR << 1 : 0b1 << 4;
+		clearAllClock();
+		setNumberOnClock(second / 5);
+		setNumberOnClock(minute / 5);
+		setNumberOnClock(hour / 12);
 
-		HAL_Delay(500);
+		HAL_Delay(1000);
+
+		if (++second >= 60)
+		{
+			second = 0;
+			if (++minute >= 60)
+			{
+				minute = 0;
+				if (++hour >= 24)
+				{
+					hour = 0;
+				}
+			}
+		}
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
