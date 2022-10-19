@@ -96,7 +96,7 @@ void display7SEG(int num)
 
 const int MAX_LED = 4;
 int index_led = 0;
-int led_buffer[4] = {6, 7, 8, 9};
+int led_buffer[4] = {0, 0, 0, 0};
 void update7SEG(int index)
 {
 	HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, GPIO_PIN_SET);
@@ -138,6 +138,26 @@ void updateClockBuffer()
 	led_buffer[2] = minute / 10;
 	led_buffer[3] = minute % 10;
 }
+
+int timer0_counter = 0;
+int timer0_flag = 0;
+int TIMER_CYCLE = 10;
+
+void set_timer0(int duration)
+{
+	timer0_counter = duration / TIMER_CYCLE;
+	timer0_flag = 0;
+}
+
+void timer_run()
+{
+	if (timer0_counter > 0)
+	{
+		timer0_counter--;
+		if (timer0_counter == 0)
+			timer0_flag = 1;
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -171,8 +191,8 @@ int main(void)
 	MX_TIM2_Init();
 	/* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim2);
-	HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_SET);
+
+	set_timer0(1000);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -180,23 +200,29 @@ int main(void)
 	while (1)
 	{
 		/* USER CODE END WHILE */
-		second++;
-		if (second >= 60)
+		if (timer0_flag == 1)
 		{
-			second = 0;
-			minute++;
+			second++;
+			if (second >= 60)
+			{
+				second = 0;
+				minute++;
+			}
+			if (minute >= 60)
+			{
+				minute = 0;
+				hour++;
+			}
+			if (hour >= 24)
+			{
+				hour = 0;
+			}
+			updateClockBuffer();
+
+			HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+
+			set_timer0(1000);
 		}
-		if (minute >= 60)
-		{
-			minute = 0;
-			hour++;
-		}
-		if (hour >= 24)
-		{
-			hour = 0;
-		}
-		updateClockBuffer();
-		HAL_Delay(1000);
 		/* USER CODE BEGIN 3 */
 	}
 	/* USER CODE END 3 */
@@ -319,24 +345,17 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 int counter = 0;
-int counter2 = 0;
-int segnum = 0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &htim2)
 	{
+		timer_run();
+
 		if (counter == 0)
 		{
 			update7SEG(index_led);
 			index_led = (++index_led < 4) ? index_led : 0;
-
-			if (counter2 == 0)
-			{
-				HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-			}
-
-			counter2 = (++counter2 < 4) ? counter2 : 0;
 		}
 		counter = (++counter < 25) ? counter : 0;
 	}
