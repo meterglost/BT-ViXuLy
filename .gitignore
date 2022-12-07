@@ -1,3 +1,7 @@
+# Exclude all lab except current lab
+/Lab[0-9]*/
+!/Lab4/
+
 # Proteus
 /Lab[0-9]*/Sim/*.pdsbak
 /Lab[0-9]*/Sim/*.pdsprj.*.workspace
